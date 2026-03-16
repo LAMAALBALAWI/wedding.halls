@@ -1,16 +1,16 @@
 FROM php:8.2-apache
 
-# تثبيت mysqli وتفعيلها
+# تثبيت mysqli
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
-# إعداد Apache ليقبل أي بورت يعطيه إياه Railway آلياً
-RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
+# السطر السحري: تعطيل المحرك المتضارب وتفعيل المستقر
+RUN a2dismod mpm_event || true && a2enmod mpm_prefork
 
 # نسخ ملفاتك
 COPY . /var/www/html/
 
-# صلاحيات الملفات
+# ضبط الصلاحيات
 RUN chown -R www-data:www-data /var/www/html/
 
-# الأمر لتشغيل السيرفر
-CMD ["apache2-foreground"]
+# إعداد البورت
+EXPOSE 80
