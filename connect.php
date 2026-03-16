@@ -1,12 +1,17 @@
 <?php
-$servername = "localhost";
+$servername = "switchyard.proxy.rlwy.net";
 $username = "root";
-$password = "";
-$dbname = "wedding_halls_db";
+$password = "RiNlrwbGhjFxiyLWxMZJbZDlvGCpKjBt";
+$dbname = "railway";
+$port = 41855;
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+// إنشاء الاتصال مع إضافة المنفذ (Port)
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
+
+// التحقق من الاتصال
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+
 $conn->set_charset("utf8mb4");
 ?>
