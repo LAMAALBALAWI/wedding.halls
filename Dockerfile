@@ -1,16 +1,13 @@
 FROM php:8.2-apache
 
-# تثبيت mysqli
+# تثبيت mysqli وتفعيلها
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
-# السطر السحري: تعطيل المحرك المتضارب وتفعيل المستقر
-RUN a2dismod mpm_event || true && a2enmod mpm_prefork
-
-# نسخ ملفاتك
+# نسخ الكود
 COPY . /var/www/html/
 
-# ضبط الصلاحيات
+# صلاحيات الملفات
 RUN chown -R www-data:www-data /var/www/html/
 
-# إعداد البورت
+# السيرفر بيعرف البورت تلقائياً
 EXPOSE 80
