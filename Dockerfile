@@ -1,21 +1,13 @@
-FROM php:8.2-apache
+FROM php:8.2-fpm-alpine
 
-# تثبيت mysqli وتفعيلها
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+# تثبيت mysqli
+RUN docker-php-ext-install mysqli
 
-# إعداد Apache ليسمح باستخدام ملفات .htaccess
-RUN a2enmod rewrite
-
-# نسخ الملفات
+# نسخ ملفاتك
 COPY . /var/www/html/
 
-# تغيير الصلاحيات
-RUN chown -R www-data:www-data /var/www/html/ \
-    && chmod -R 755 /var/www/html/
+# ضبط الصلاحيات
+RUN chown -R www-data:www-data /var/www/html/
 
-# ضبط المنفذ الافتراضي لـ Apache ليكون متوافقاً مع Railway
-ENV PORT 80
-EXPOSE 80
-
-# تشغيل Apache في المقدمة
-CMD ["apache2-foreground"]
+# تشغيل السيرفر
+CMD ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
