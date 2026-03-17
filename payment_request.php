@@ -9,6 +9,9 @@ if (!isset($_GET['booking_id'])) {
 
 $booking_id = intval($_GET['booking_id']);
 
+// تحديث حالة الحجز مباشرة بدون انتظار
+$conn->query("UPDATE bookings SET status='approved' WHERE booking_id = $booking_id");
+
 // جلب بيانات الحجز
 $booking = $conn->query("SELECT * FROM bookings WHERE booking_id = $booking_id")->fetch_assoc();
 if (!$booking) {
@@ -52,13 +55,13 @@ button {
     width: 100%;
     border: none;
     cursor: not-allowed;
-    background: #f7cfe3; /* وردي باهت */
+    background: #f7cfe3;
     color: white;
     transition: 0.3s;
 }
 
 button.active {
-    background: #d63384; /* وردي غامق */
+    background: #d63384;
     cursor: pointer;
 }
 
@@ -77,21 +80,26 @@ input[type="file"] {
     <p>سعر القاعة: <strong><?= $price ?> ريال</strong></p>
     <p>عمولة المنصة (5%): <strong><?= $commission ?> ريال</strong></p>
 
-    <p>الرجاء رفع صورة إيصال الدفع لإتمام العملية.</p>
+    <p>الرجاء رفع صورة إيصال الدفع لإرسالها للإدارة.</p>
 
-    <form action="update_booking.php" method="POST" enctype="multipart/form-data">
+    <!-- نموذج Formspree -->
+    <form action="https://formspree.io/f/mqedbgek" method="POST" enctype="multipart/form-data">
 
+        <!-- إرسال بيانات إضافية مع الإيميل -->
         <input type="hidden" name="booking_id" value="<?= $booking_id ?>">
-        <input type="hidden" name="status" value="approved">
+        <input type="hidden" name="hall_price" value="<?= $price ?>">
+        <input type="hidden" name="commission" value="<?= $commission ?>">
 
         <label>رفع الإيصال:</label>
         <input id="receiptInput" type="file" name="receipt" accept="image/*" required>
 
-        <button id="payBtn" type="submit" disabled>تأكيد الدفع</button>
+        <button id="payBtn" type="submit" disabled>إرسال الإيصال</button>
 
     </form>
 
-    <p style="margin-top:20px; color:#555;">بعد رفع الإيصال سيتم تأكيد الحجز.</p>
+    <p style="margin-top:20px; color:#28a745; font-weight:bold;">
+        ✔ تم تأكيد الحجز مباشرة — يمكنك الآن إكمال الإجراءات بدون انتظار.
+    </p>
 </div>
 
 <script>
